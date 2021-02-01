@@ -1,0 +1,32 @@
+// .vscode/settings.json
+{
+    "deno.enable": true,
+    "deno.unstable": true,
+    "deno.lint": true,
+    "deno.import_intellisense_origins": {
+      "https://deno.land": true,
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "denoland.vscode-deno",
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "denoland.vscode-deno",
+    },
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#63c386",
+        "activityBar.activeBorder": "#825ec1",
+        "activityBar.background": "#63c386",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#825ec1",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "statusBar.background": "#43b06b",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#358b55",
+        "titleBar.activeBackground": "#43b06b",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#43b06b99",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#43b06b",
+  }
