@@ -57,3 +57,8 @@ $ sudo lsof -i -n -P | grep TCP
 ```sh
 $ kill -9 <ID PROCESS>
 ```
+
+## Howto run application
+```sh
+$ deno run --allow-net server.ts
+```
