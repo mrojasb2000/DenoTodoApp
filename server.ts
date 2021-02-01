@@ -6,13 +6,17 @@ const port: number = 8080;
 
 const router = new Router();
 router.get("/", ({ response }: { response: Response }) => {
-    response.body = {
-        message: "hello world",
-    }
+  response.body = {
+    message: "hello world",
+  };
 });
 
-app.use(router.routes())
-app.use(router.allowedMethods())
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-console.log(`running on port `, port);
+app.addEventListener("listen", ({ secure, hostname, port }) => {
+  const protocol = secure ? "https://" : "http://";
+  const url = `${protocol}${hostname ?? "localhost"}:${port}`;
+  console.log(`Listering on port ${port}`);
+});
 await app.listen({ port });
