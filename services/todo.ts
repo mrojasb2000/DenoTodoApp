@@ -43,7 +43,6 @@ export default {
       if (!todoFound) throw { status: 404, message: "User not found" }
       response.status = 200;
       response.body = {
-        success: true,
         data: todoFound,
       }
     } catch (error) {
