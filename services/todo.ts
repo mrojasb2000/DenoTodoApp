@@ -15,43 +15,72 @@ export default {
     { request, response }: { request: Request; response: Response },
   ) => {
     try {
-      const { todo } = await request.body().value
-      if (!request.hasBody || !todo) throw { status: 401, message: "Invalid input data" }
+      const { todo } = await request.body().value;
+      if (!request.hasBody || !todo) {
+        throw { status: 401, message: "Invalid input data" };
+      }
       const newTodo: Todo = {
         id: v4.generate(),
         todo: todo,
         isCompleted: false,
-      }
-      todos.push(newTodo)
+      };
+      todos.push(newTodo);
       response.status = 200;
       response.body = {
         message: "New todo added",
         data: todos,
-      }
+      };
     } catch (error) {
-      const { status, message } = error
-      response.status = status
-      response.body = { message }
-    } 
+      const { status, message } = error;
+      response.status = status;
+      response.body = { message };
+    }
   },
   getTodoById: (
     { params, response }: { params: { id: string }; response: Response },
   ) => {
     try {
-      const todoFound: Todo | undefined = todos.find((todo) => todo.id === params.id);
-      if (!todoFound) throw { status: 404, message: "User not found" }
+      const todoFound: Todo | undefined = todos.find((todo) =>
+        todo.id === params.id
+      );
+      if (!todoFound) throw { status: 404, message: "User not found" };
       response.status = 200;
       response.body = {
         data: todoFound,
-      }
+      };
     } catch (error) {
-      const { status, message } = error
-      response.status = status
-      response.body = { message }
+      const { status, message } = error;
+      response.status = status;
+      response.body = { message };
     }
   },
-  updateTodoById: () => {
-
+  updateTodoById: async (
+    { request, response, params }: {
+      request: Request;
+      response: Response;
+      params: { id: string };
+    },
+  ) => {
+    try {
+      const { todo, isCompleted } = await request.body().value;
+      if (!request.hasBody || !todo || !isCompleted) {
+        throw { status: 401, message: "Invalid input data" };
+      }
+      const todoFound: Todo | undefined = todos.find((todo) =>
+        todo.id === params.id
+      );
+      if (!todoFound) throw { status: 404, message: "User not found" };
+      todoFound.todo = todo;
+      todoFound.isCompleted = isCompleted;
+      response.status = 200;
+      response.body = {
+        data: todoFound,
+      };
+    } catch (error) {
+      const { status, message } = error;
+      response.status = status;
+      response.body = { message };
+    }
   },
   deleteTodoById: () => {},
 };
