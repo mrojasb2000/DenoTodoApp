@@ -34,12 +34,11 @@ export default {
       response.body = { message }
     } 
   },
-
   getTodoById: (
     { params, response }: { params: { id: string }; response: Response },
   ) => {
     try {
-      const todoFound = todos.find((todo) => todo.id === params.id);
+      const todoFound: Todo | undefined = todos.find((todo) => todo.id === params.id);
       if (!todoFound) throw { status: 404, message: "User not found" }
       response.status = 200;
       response.body = {
@@ -51,6 +50,8 @@ export default {
       response.body = { message }
     }
   },
-  updateTodoById: () => {},
+  updateTodoById: () => {
+
+  },
   deleteTodoById: () => {},
 };
