@@ -15,8 +15,8 @@ export default {
     { request, response }: { request: Request; response: Response },
   ) => {
     try {
-      if (!request.hasBody) throw { status: 401, message: "Invalid input data" }
       const { todo } = await request.body().value
+      if (!request.hasBody || !todo) throw { status: 401, message: "Invalid input data" }
       const newTodo: Todo = {
         id: v4.generate(),
         todo: todo,
@@ -25,7 +25,7 @@ export default {
       todos.push(newTodo)
       response.status = 200;
       response.body = {
-        success: true,
+        message: "New todo added",
         data: todos,
       }
     } catch (error) {
