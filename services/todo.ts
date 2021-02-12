@@ -16,8 +16,8 @@ export default {
   ) => {
     try {
       const { todo } = await request.body().value;
-      if (!request.hasBody || !todo) {
-        throw { status: 401, message: "Invalid input data" };
+      if (!request.hasBody || todo === undefined) {
+        throw { status: 400, message: "Invalid input data" };
       }
       const newTodo: Todo = {
         id: v4.generate(),
@@ -43,7 +43,7 @@ export default {
       const todoFound: Todo | undefined = todos.find((todo) =>
         todo.id === params.id
       );
-      if (!todoFound) throw { status: 404, message: "User not found" };
+      if (todoFound === undefined) throw { status: 404, message: "Entity not found" };
       response.status = 200;
       response.body = {
         data: todoFound,
@@ -62,16 +62,24 @@ export default {
     },
   ) => {
     try {
-      const { todo, isCompleted } = await request.body().value;
-      if (!request.hasBody || !todo || !isCompleted) {
-        throw { status: 401, message: "Invalid input data" };
+      if (!request.hasBody) {
+        throw { status: 400, message: "Invalid body data" };
       }
+      const { todo, isCompleted } = await request.body().value;
+      if (todo === undefined && isCompleted === undefined) {
+        throw { status: 400, message: "Invalid input data" };
+      }
+
       const todoFound: Todo | undefined = todos.find((todo) =>
         todo.id === params.id
       );
-      if (!todoFound) throw { status: 404, message: "User not found" };
-      todoFound.todo = todo;
-      todoFound.isCompleted = isCompleted;
+      if (todoFound === undefined) {
+        throw { status: 404, message: "Entity not found" };
+      }
+
+      todoFound.todo = todo !== undefined ? todo : todoFound.todo;
+      todoFound.isCompleted = isCompleted !== undefined ? isCompleted : todoFound.isCompleted;
+
       response.status = 200;
       response.body = {
         data: todoFound,
