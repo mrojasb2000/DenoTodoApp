@@ -15,8 +15,11 @@ export default {
     { request, response }: { request: Request; response: Response },
   ) => {
     try {
+      if (!request.hasBody) {
+        throw { status: 400, message: "Invalid input body" };
+      }
       const { todo } = await request.body().value;
-      if (!request.hasBody || todo === undefined) {
+      if (!todo) {
         throw { status: 400, message: "Invalid input data" };
       }
       const newTodo: Todo = {
@@ -43,7 +46,9 @@ export default {
       const todoFound: Todo | undefined = todos.find((todo) =>
         todo.id === params.id
       );
-      if (todoFound === undefined) throw { status: 404, message: "Entity not found" };
+      if (todoFound === undefined) {
+        throw { status: 404, message: "Entity not found" };
+      }
       response.status = 200;
       response.body = {
         data: todoFound,
@@ -63,22 +68,22 @@ export default {
   ) => {
     try {
       if (!request.hasBody) {
-        throw { status: 400, message: "Invalid body data" };
+        throw { status: 400, message: "Invalid input body" };
       }
-      const { todo, isCompleted } = await request.body().value;
-      if (todo === undefined && isCompleted === undefined) {
-        throw { status: 400, message: "Invalid input data" };
-      }
-
       const todoFound: Todo | undefined = todos.find((todo) =>
         todo.id === params.id
       );
       if (todoFound === undefined) {
         throw { status: 404, message: "Entity not found" };
       }
-
+      const { todo, isCompleted } = await request.body().value;
+      if (todo === undefined && isCompleted === undefined) {
+        throw { status: 400, message: "Invalid input data" };
+      }
       todoFound.todo = todo !== undefined ? todo : todoFound.todo;
-      todoFound.isCompleted = isCompleted !== undefined ? isCompleted : todoFound.isCompleted;
+      todoFound.isCompleted = isCompleted !== undefined
+        ? isCompleted
+        : todoFound.isCompleted;
 
       response.status = 200;
       response.body = {
@@ -90,5 +95,22 @@ export default {
       response.body = { message };
     }
   },
-  deleteTodoById: () => {},
+  deleteTodoById: (
+    { response, params }: {
+      response: Response;
+      params: { id: string };
+    },
+  ) => {
+    try {
+      const allTodos: Todo[] = todos.filter((todo) => todo.id !== params.id );
+      response.status = 200;
+      response.body = {
+        data: allTodos,
+      };
+    } catch (error) {
+      const { status, message } = error;
+      response.status = status;
+      response.body = { message };
+    }
+  },
 };
