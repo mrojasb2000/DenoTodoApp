@@ -61,4 +61,5 @@ $ kill -9 <ID PROCESS>
 ## Howto run application
 ```sh
 $ deno run --allow-net server.ts
+$ deno test --allow-read --allow-net --location http://localhost server.ts
 ```
