@@ -1,5 +1,5 @@
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
-import Todo from '../interfaces/Todo.ts';
+import Todo from "../src/interfaces/Todo.ts";
 
 let todos: Todo[] = [
     {

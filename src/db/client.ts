@@ -29,6 +29,18 @@ const run = async () => {
          PRIMARY KEY (id)
      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     `)
+    // add new row default
+    await client.execute(`
+     INSERT INTO ${TABLE.TODO} (
+         id,
+         todo,
+         isCompleted
+     ) VALUES (
+         1,
+         "Default todo",
+         false
+     );
+    `)
 }
 
 run()

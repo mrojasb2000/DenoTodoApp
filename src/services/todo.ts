@@ -1,16 +1,33 @@
 import { Request, Response } from "https://deno.land/x/oak/mod.ts";
 import { v4 } from "https://deno.land/std@0.85.0/uuid/mod.ts";
-import todos from "../stubs/todos.ts";
+import todos from "../../stubs/todos.ts";
+// interface
 import Todo from "../interfaces/Todo.ts";
+// models
+import TodoModel from "../models/todo.ts"
 
 export default {
-  getAllTodos: ({ response }: { response: Response }) => {
-    response.status = 200;
-    response.body = {
-      success: true,
-      data: todos,
-    };
+  /**
+   * @description Get all todos
+   * @route GET /todos
+   */
+  getAllTodos: async ({ response }: { response: Response }) => {
+    try {
+      const data = await TodoModel.getAll()
+      response.status = 200;
+      response.body = {
+        data,
+      };
+    } catch (error) {
+      const { status, message } = error;
+      response.status = status;
+      response.body = { message };
+    }
   },
+  /**
+   * @description Add a new todo
+   * @route POST /todos
+   */
   createTodo: async (
     { request, response }: { request: Request; response: Response },
   ) => {
@@ -39,7 +56,11 @@ export default {
       response.body = { message };
     }
   },
-  getTodoById: (
+  /**
+   * @description Get todo by id
+   * @route GET todos/:id
+   */
+  getTodoById: async (
     { params, response }: { params: { id: string }; response: Response },
   ) => {
     try {
@@ -59,6 +80,10 @@ export default {
       response.body = { message };
     }
   },
+  /**
+   * @description Up`date todo by id
+   * @route PUT todos/:id
+   */
   updateTodoById: async (
     { request, response, params }: {
       request: Request;
@@ -95,7 +120,11 @@ export default {
       response.body = { message };
     }
   },
-  deleteTodoById: (
+  /**
+   * @description Delete todo by id
+   * @route DELETE todos/:id
+   */
+  deleteTodoById: async (
     { response, params }: {
       response: Response;
       params: { id: string };
