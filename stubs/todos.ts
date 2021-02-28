@@ -3,12 +3,12 @@ import Todo from "../src/interfaces/Todo.ts";
 
 let todos: Todo[] = [
     {
-        id: v4.generate(),
+        id: 1,
         todo: 'walk dog',
         isCompleted: true,
     },
     {
-        id: v4.generate(),
+        id: 2,
         todo: 'eat food',
         isCompleted: false,
     },

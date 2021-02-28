@@ -58,12 +58,19 @@ export default {
     { params, response }: { params: { id: string }; response: Response },
   ) => {
     try {
-      const todoFound: Todo | undefined = todos.find((todo) =>
-        todo.id === params.id
-      );
-      if (todoFound === undefined) {
-        throw { status: 404, message: "Entity not found" };
+      const isAvailable = await TodoModel.doesExistById({
+        id: Number(params.id),
+      });
+
+      if (!isAvailable) {
+        response.status = 404;
+        response.body = {
+          message: "No todo found",
+        };
+        return;
       }
+
+      const todoFound = await TodoModel.getById({ id: Number(params.id) });
       response.status = 200;
       response.body = {
         data: todoFound,
@@ -85,7 +92,7 @@ export default {
       params: { id: string };
     },
   ) => {
-    try {
+    /* try {
       if (!request.hasBody) {
         throw { status: 400, message: "Invalid input body" };
       }
@@ -112,7 +119,7 @@ export default {
       const { status, message } = error;
       response.status = status;
       response.body = { message };
-    }
+    } */
   },
   /**
    * @description Delete todo by id
@@ -124,7 +131,7 @@ export default {
       params: { id: string };
     },
   ) => {
-    try {
+    /* try {
       const allTodos: Todo[] = todos.filter((todo) => todo.id !== params.id);
       response.status = 200;
       response.body = {
@@ -134,6 +141,6 @@ export default {
       const { status, message } = error;
       response.status = status;
       response.body = { message };
-    }
+    } */
   },
 };

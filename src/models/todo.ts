@@ -11,7 +11,13 @@ export default {
      * @param id
      * @returns boolean to tell if an entry of todo exists in table
      */
-  doesExistById: async ({ id }: Todo) => {},
+  doesExistById: async ({ id }: Todo) => {
+   const [result] = await client.query(
+      `SELECT COUNT(*) count FROM ${TABLE.TODO} WHERE id = ? LIMIT 1`,
+      [id]
+   )
+   return result.count > 0
+  },
   /**
      * Will return all the entries in the todo column
      * @returns array of todos
@@ -25,7 +31,12 @@ export default {
      * @param id
      * @returns object of todo item
      */
-  getById: async ({ id }: Todo) => {},
+  getById: async ({ id }: Todo) => {
+     return await client.query(
+        `SELECT * FROM ${TABLE.TODO} WHERE id = ?`,
+        [id]
+     )
+  },
   /**
      * Adds a new todo item to todo table
      * @param todo
