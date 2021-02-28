@@ -4,7 +4,7 @@ import todos from "../../stubs/todos.ts";
 // interface
 import Todo from "../interfaces/Todo.ts";
 // models
-import TodoModel from "../models/todo.ts"
+import TodoModel from "../models/todo.ts";
 
 export default {
   /**
@@ -13,7 +13,7 @@ export default {
    */
   getAllTodos: async ({ response }: { response: Response }) => {
     try {
-      const data = await TodoModel.getAll()
+      const data = await TodoModel.getAll();
       response.status = 200;
       response.body = {
         data,
@@ -31,24 +31,18 @@ export default {
   createTodo: async (
     { request, response }: { request: Request; response: Response },
   ) => {
+    if (!request.hasBody) {
+      throw { status: 400, message: "No data provided" };
+    }
+    const { todo } = await request.body().value;
+    if (!todo) {
+      throw { status: 400, message: "Invalid input data" };
+    }
     try {
-      if (!request.hasBody) {
-        throw { status: 400, message: "Invalid input body" };
-      }
-      const { todo } = await request.body().value;
-      if (!todo) {
-        throw { status: 400, message: "Invalid input data" };
-      }
-      const newTodo: Todo = {
-        id: v4.generate(),
-        todo: todo,
-        isCompleted: false,
-      };
-      todos.push(newTodo);
-      response.status = 200;
+      await TodoModel.add({ todo: todo, isCompleted: false });
+      response.status = 201;
       response.body = {
-        message: "New todo added",
-        data: todos,
+        message: "The record was added successfully",
       };
     } catch (error) {
       const { status, message } = error;
@@ -131,7 +125,7 @@ export default {
     },
   ) => {
     try {
-      const allTodos: Todo[] = todos.filter((todo) => todo.id !== params.id );
+      const allTodos: Todo[] = todos.filter((todo) => todo.id !== params.id);
       response.status = 200;
       response.body = {
         data: allTodos,
