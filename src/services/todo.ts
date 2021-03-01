@@ -57,19 +57,18 @@ export default {
   getTodoById: async (
     { params, response }: { params: { id: string }; response: Response },
   ) => {
+    const isAvailable = await TodoModel.doesExistById({
+      id: Number(params.id),
+    });
+
+    if (!isAvailable) {
+      response.status = 404;
+      response.body = {
+        message: "No todo found",
+      };
+      return;
+    }
     try {
-      const isAvailable = await TodoModel.doesExistById({
-        id: Number(params.id),
-      });
-
-      if (!isAvailable) {
-        response.status = 404;
-        response.body = {
-          message: "No todo found",
-        };
-        return;
-      }
-
       const todoFound = await TodoModel.getById({ id: Number(params.id) });
       response.status = 200;
       response.body = {
