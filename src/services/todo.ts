@@ -91,34 +91,38 @@ export default {
       params: { id: string };
     },
   ) => {
-    /* try {
-      if (!request.hasBody) {
-        throw { status: 400, message: "Invalid input body" };
+    try {
+      const isAvailable = await TodoModel.doesExistById({
+        id: Number(params.id),
+      });
+      if (!isAvailable) {
+        response.status = 404;
+        response.body = {
+          message: "No todo found",
+        };
+        return;
       }
-      const todoFound: Todo | undefined = todos.find((todo) =>
-        todo.id === params.id
-      );
-      if (todoFound === undefined) {
-        throw { status: 404, message: "Entity not found" };
-      }
+
+      // if todo found then update todo
       const { todo, isCompleted } = await request.body().value;
-      if (todo === undefined && isCompleted === undefined) {
+      if (!todo) {
         throw { status: 400, message: "Invalid input data" };
       }
-      todoFound.todo = todo !== undefined ? todo : todoFound.todo;
-      todoFound.isCompleted = isCompleted !== undefined
-        ? isCompleted
-        : todoFound.isCompleted;
-
+      //const body = await request.body();
+      const updatedRows = await TodoModel.updateById({
+        id: Number(params.id),
+        todo,
+        isCompleted,
+      });
       response.status = 200;
       response.body = {
-        data: todoFound,
+        message: `Successfully updated ${updatedRows} row(s)`,
       };
     } catch (error) {
       const { status, message } = error;
-      response.status = status;
+      response.status = 400;
       response.body = { message };
-    } */
+    }
   },
   /**
    * @description Delete todo by id
@@ -130,16 +134,28 @@ export default {
       params: { id: string };
     },
   ) => {
-    /* try {
-      const allTodos: Todo[] = todos.filter((todo) => todo.id !== params.id);
+    try {
+      const isAvailable = await TodoModel.doesExistById({ id: Number(params.id) });
+      if (!isAvailable) {
+        response.status = 404;
+        response.body = {
+          message: "No todo found",
+        };
+        return;
+      }
+
+      // if todo found then delete todo
+      const affectedRows = await TodoModel.deleteById({
+        id: Number(params.id),
+      });
       response.status = 200;
       response.body = {
-        data: allTodos,
+        message: `Successfully deleted ${affectedRows} row(s)`,
       };
     } catch (error) {
       const { status, message } = error;
-      response.status = status;
+      response.status = 400;
       response.body = { message };
-    } */
-  },
+    }
+  }
 };

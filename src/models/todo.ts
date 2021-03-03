@@ -58,11 +58,29 @@ export default {
      * @param isCompleted
      * @returns integer (count of effect rows)
      */
-  updateById: async ({ id, todo, isCompleted }: Todo) => {},
+  updateById: async ({ id, todo, isCompleted }: Todo) => {
+     const result = await client.query(
+        `UPDATE ${TABLE.TODO} SEt todo = ?, isCompleted = ? WHERE id = ?`,
+        [
+           todo,
+           isCompleted,
+           id,
+        ],
+     )
+     // return count of rows updated
+     return result.affectedRows
+  },
   /**
      * Deletes a todo by ID
      * @param id
      * @returns integer (count of effect rows)
      */
-  deleteById: async ({ id }: Todo) => {},
+  deleteById: async ({ id }: Todo) => {
+     const result = await client.query(
+        `DELETE FROM ${TABLE.TODO} WHERE id = ?`,
+        [id],
+     )
+     // return count of rows affected
+     return result.affectedRows
+  },
 };
